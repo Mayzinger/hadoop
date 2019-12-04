@@ -1,0 +1,52 @@
+# test hadoop-examples.jar  
+#for Cloudera
+
+hadoop jar /opt/cloudera/parcels/CDH/lib/hadoop-0.20-mapreduce/hadoop-examples.jar  pi 2 5
+
+# for HortonWorks
+hadoop jar /usr/hdp/2.6.5.0-292/hadoop-mapreduce/hadoop-mapreduce-examples.jar pi 2 5
+
+#   find with mlocate
+
+sudo yum install mlocate
+sudo updatedb
+
+locate *-examples.jar
+
+
+#-------------------------------------------------------------------------
+
+
+
+#copy from HDFS to local FS
+
+hadoop fs -get /staging/input/MaxClosePriceTool-1.0-ARG.jar .
+
+
+hadoop jar 	MaxClosePriceTool-1.0-ARG.jar 
+		 com.hirw.maxcloseprice.MaxClosePriceTool 
+		/staging/input/stocks 
+		student13/out/max01
+
+
+#---------------------------------------------------------------------
+
+sudo -u hdfs hdfs dfs -mkdir /user/username
+
+sudo -u hdfs hdfs dfs -chown -R username:username /user/username
+
+
+export HADOOP_USER_NAME=username
+
+
+#--------------------------------------------------------------------
+
+sqoop import -Dmapreduce.job.user.classpath.first=true 
+		--connect jdbc:mysql://ip-172-31-46-71.us-west-2.compute.internal/training 
+		--username=ubuntu --password=password  
+		--table stocks 
+		--target-dir /user/ec2-user/komissar_avro 
+		--delete-target-dir 
+		--as-avrodatafile
+
+
